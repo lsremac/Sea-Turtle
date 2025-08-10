@@ -1,52 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sea Turtle Cleanup</title>
-    <meta name="description" content="Swim across the reef as a sea turtle, collect unusual trash, and clean up the ocean!" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div id="ui">
-      <div id="hud">
-        <div id="title">Sea Turtle Cleanup</div>
-        <div id="counter">0 / 24</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurtleQuest: Ocean Savior</title>
+  <meta name="description" content="An AI-powered ocean cleanup adventure game with real-time leaderboards and environmental education">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#00ffd0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TurtleQuest">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Phaser 3 -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+      <div class="turtle-logo">🐢</div>
+      <h1>TurtleQuest</h1>
+      <p>Ocean Savior</p>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
       </div>
-      <div id="controls">
-        <button id="btn-reset" title="Reset (R)">Reset</button>
-        <button id="btn-mute" title="Mute (M)">Mute</button>
-        <button id="btn-help" title="Help (H)">Help</button>
+      <p class="loading-text">Loading the ocean...</p>
+    </div>
+  </div>
+
+  <!-- Main Game UI -->
+  <div id="game-ui" class="game-ui hidden">
+    <!-- HUD -->
+    <div id="hud" class="hud">
+      <div class="hud-left">
+        <div class="score-display">
+          <span class="score-label">Score</span>
+          <span id="score" class="score-value">0</span>
+        </div>
+        <div class="level-display">
+          <span class="level-label">Level</span>
+          <span id="level" class="level-value">1</span>
+        </div>
+      </div>
+      
+      <div class="hud-center">
+        <div class="game-title">TurtleQuest</div>
+        <div class="ocean-health">
+          <span class="health-label">Ocean Health</span>
+          <div class="health-bar">
+            <div id="health-fill" class="health-fill"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hud-right">
+        <div class="trash-counter">
+          <span class="counter-label">Trash Collected</span>
+          <span id="trash-count" class="counter-value">0</span>
+        </div>
+        <div class="power-up-indicator">
+          <div id="power-up-icon" class="power-up-icon hidden">⚡</div>
+        </div>
       </div>
     </div>
 
-    <canvas id="game"></canvas>
-
-    <div id="overlay" class="hidden">
-      <div class="card">
-        <h2>You cleaned the reef! 🌊🐢</h2>
-        <p>Great job collecting all the unusual trash.</p>
-        <button id="btn-play-again">Play again</button>
-      </div>
+    <!-- Controls -->
+    <div id="controls" class="controls">
+      <button id="btn-pause" class="control-btn" title="Pause (P)">⏸️</button>
+      <button id="btn-mute" class="control-btn" title="Mute (M)">🔊</button>
+      <button id="btn-help" class="control-btn" title="Help (H)">❓</button>
+      <button id="btn-leaderboard" class="control-btn" title="Leaderboard (L)">🏆</button>
     </div>
 
-    <div id="help" class="hidden">
-      <div class="card">
-        <h2>How to play</h2>
-        <ul>
-          <li>Move with Arrow Keys or WASD</li>
-          <li>Collect all the unusual trash (24+ items)</li>
-          <li>Avoid getting stuck. Use Reset if needed</li>
-        </ul>
-        <button id="btn-close-help">Got it!</button>
+    <!-- Mobile Controls -->
+    <div id="mobile-controls" class="mobile-controls">
+      <div class="control-stick left-stick">
+        <div class="stick-base">
+          <div class="stick-thumb"></div>
+        </div>
+      </div>
+      <div class="control-stick right-stick">
+        <div class="stick-base">
+          <div class="stick-thumb"></div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <script src="game.js"></script>
-  </body>
-  </html>
+  <!-- Game Canvas Container -->
+  <div id="game-container" class="game-container">
+    <div id="phaser-game"></div>
+  </div>
+
+  <!-- Overlays -->
+  <div id="pause-overlay" class="overlay hidden">
+    <div class="modal">
+      <h2>Game Paused</h2>
+      <div class="modal-buttons">
+        <button id="btn-resume" class="btn-primary">Resume</button>
+        <button id="btn-restart" class="btn-secondary">Restart</button>
+        <button id="btn-main-menu" class="btn-secondary">Main Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="game-over-overlay" class="overlay hidden">
+    <div class="modal">
+      <h2>Game Over</h2>
+      <div class="final-score">
+        <p>Final Score: <span id="final-score">0</span></p>
+        <p>Level Reached: <span id="final-level">1</span></p>
+        <p>Trash Collected: <span id="final-trash">0</span></p>
+      </div>
+      <div class="modal-buttons">
+        <button id="btn-play-again" class="btn-primary">Play Again</button>
+        <button id="btn-share-score" class="btn-secondary">Share Score</button>
+        <button id="btn-main-menu" class="btn-secondary">Main Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="level-complete-overlay" class="overlay hidden">
+    <div class="modal">
+      <h2>Level Complete! 🎉</h2>
+      <div class="level-stats">
+        <p>Score: <span id="level-score">0</span></p>
+        <p>Trash Collected: <span id="level-trash">0</span></p>
+        <p>Time Bonus: <span id="time-bonus">0</span></p>
+      </div>
+      <div class="ai-turtle-chat">
+        <div class="turtle-avatar">🐢</div>
+        <div class="chat-bubble">
+          <p id="ai-message">Great job cleaning up the ocean! Did you know that sea turtles can live up to 80 years?</p>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button id="btn-next-level" class="btn-primary">Next Level</button>
+        <button id="btn-continue" class="btn-secondary">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="help-overlay" class="overlay hidden">
+    <div class="modal help-modal">
+      <h2>How to Play</h2>
+      <div class="help-content">
+        <div class="help-section">
+          <h3>🎮 Controls</h3>
+          <ul>
+            <li><strong>Arrow Keys / WASD:</strong> Move turtle</li>
+            <li><strong>Space:</strong> Turbo boost (when available)</li>
+            <li><strong>P:</strong> Pause game</li>
+            <li><strong>M:</strong> Mute sound</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>🎯 Objectives</h3>
+          <ul>
+            <li>Collect trash to increase ocean health</li>
+            <li>Avoid hazards like fishing nets and sharks</li>
+            <li>Use power-ups to enhance abilities</li>
+            <li>Complete levels to unlock new areas</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>🌟 Power-ups</h3>
+          <ul>
+            <li><strong>⚡ Turbo:</strong> Increased speed</li>
+            <li><strong>🛡️ Shield:</strong> Temporary protection</li>
+            <li><strong>🔍 Magnet:</strong> Attract nearby trash</li>
+          </ul>
+        </div>
+      </div>
+      <button id="btn-close-help" class="btn-primary">Got it!</button>
+    </div>
+  </div>
+
+  <div id="leaderboard-overlay" class="overlay hidden">
+    <div class="modal leaderboard-modal">
+      <h2>🏆 Global Leaderboard</h2>
+      <div class="leaderboard-tabs">
+        <button class="tab-btn active" data-tab="global">Global</button>
+        <button class="tab-btn" data-tab="friends">Friends</button>
+        <button class="tab-btn" data-tab="daily">Daily</button>
+      </div>
+      <div id="leaderboard-content" class="leaderboard-content">
+        <div class="loading-spinner">Loading...</div>
+      </div>
+      <button id="btn-close-leaderboard" class="btn-primary">Close</button>
+    </div>
+  </div>
+
+  <!-- Main Menu -->
+  <div id="main-menu" class="main-menu">
+    <div class="menu-content">
+      <div class="game-logo">
+        <div class="turtle-logo-large">🐢</div>
+        <h1>TurtleQuest</h1>
+        <p class="tagline">Ocean Savior</p>
+      </div>
+      
+      <div class="menu-buttons">
+        <button id="btn-start-game" class="btn-primary btn-large">Start Adventure</button>
+        <button id="btn-continue-game" class="btn-secondary btn-large hidden">Continue Game</button>
+        <button id="btn-leaderboard-menu" class="btn-secondary btn-large">Leaderboard</button>
+        <button id="btn-settings" class="btn-secondary btn-large">Settings</button>
+        <button id="btn-about" class="btn-secondary btn-large">About</button>
+      </div>
+      
+      <div class="menu-footer">
+        <p>Save the ocean, one piece of trash at a time! 🌊</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-overlay" class="overlay hidden">
+    <div class="modal settings-modal">
+      <h2>Settings</h2>
+      <div class="settings-content">
+        <div class="setting-group">
+          <label for="sound-volume">Sound Volume</label>
+          <input type="range" id="sound-volume" min="0" max="100" value="70">
+        </div>
+        <div class="setting-group">
+          <label for="music-volume">Music Volume</label>
+          <input type="range" id="music-volume" min="0" max="100" value="50">
+        </div>
+        <div class="setting-group">
+          <label for="difficulty">Difficulty</label>
+          <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label for="particle-effects">Particle Effects</label>
+          <input type="checkbox" id="particle-effects" checked>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button id="btn-save-settings" class="btn-primary">Save</button>
+        <button id="btn-cancel-settings" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div id="about-overlay" class="overlay hidden">
+    <div class="modal about-modal">
+      <h2>About TurtleQuest</h2>
+      <div class="about-content">
+        <p>TurtleQuest: Ocean Savior is an educational game that raises awareness about ocean pollution while providing an engaging gaming experience.</p>
+        <div class="features-list">
+          <h3>Features:</h3>
+          <ul>
+            <li>🎮 Multiple levels with increasing difficulty</li>
+            <li>🤖 AI-powered turtle companion with ocean facts</li>
+            <li>🌍 Real-time global leaderboards</li>
+            <li>📱 Progressive Web App (PWA) support</li>
+            <li>🎵 Immersive sound design</li>
+            <li>🎨 Beautiful particle effects and animations</li>
+          </ul>
+        </div>
+        <div class="tech-stack">
+          <h3>Built with:</h3>
+          <p>Phaser 3, Node.js, Socket.IO, PostgreSQL, OpenAI API</p>
+        </div>
+      </div>
+      <button id="btn-close-about" class="btn-primary">Close</button>
+    </div>
+  </div>
+
+  <!-- PWA Install Prompt -->
+  <div id="pwa-install-prompt" class="pwa-prompt hidden">
+    <div class="pwa-content">
+      <p>Install TurtleQuest for the best experience!</p>
+      <div class="pwa-buttons">
+        <button id="btn-install-pwa" class="btn-primary">Install</button>
+        <button id="btn-dismiss-pwa" class="btn-secondary">Not Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio-manager.js"></script>
+  <script src="js/ui-manager.js"></script>
+  <script src="js/pwa-installer.js"></script>
+  <script src="js/leaderboard-manager.js"></script>
+  <script src="js/ai-turtle-chat.js"></script>
+  <script src="js/effects/particle-manager.js"></script>
+  <script src="js/entities/turtle-player.js"></script>
+  <script src="js/entities/trash-manager.js"></script>
+  <script src="js/entities/hazard-manager.js"></script>
+  <script src="js/entities/power-up-manager.js"></script>
+  <script src="js/game-manager.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
 
 
