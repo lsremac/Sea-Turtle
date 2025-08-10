@@ -1,0 +1,113 @@
+:root {
+  --bg: #071e26;
+  --reef: #0d3340;
+  --text: #def7ff;
+  --accent: #00ffd0;
+  --accent-2: #ff9ecd;
+  --card: #0a2a33cc;
+  --btn: #08303b;
+  --btn-hover: #0b4655;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 50% 20%, #0a3341 0%, var(--bg) 60%);
+  font-family: 'Fredoka', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  overflow: hidden;
+}
+
+#ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: linear-gradient(180deg, #00000066, #00000000);
+  z-index: 10;
+}
+
+#hud { display: flex; gap: 12px; align-items: center; }
+
+#title {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 20px;
+  color: var(--accent);
+  text-shadow: 0 2px 0 #01222a;
+}
+
+#counter {
+  font-weight: 600;
+  font-size: 14px;
+  padding: 4px 10px;
+  background: #012a33bb;
+  border: 1px solid #0a4b59;
+  border-radius: 999px;
+}
+
+#controls { display: flex; gap: 8px; }
+button {
+  appearance: none;
+  background: var(--btn);
+  border: 1px solid #0c4454;
+  color: var(--text);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover { background: var(--btn-hover); }
+
+#game {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.hidden { display: none; }
+
+#overlay, #help {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #00000066;
+  z-index: 20;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid #0a4b59;
+  border-radius: 16px;
+  padding: 20px;
+  width: min(92vw, 520px);
+  box-shadow: 0 20px 60px #00000066, inset 0 1px 0 #ffffff0a;
+}
+.card h2 { margin: 0 0 8px 0; }
+.card p { margin: 0 0 16px 0; opacity: 0.9; }
+.card ul { margin: 0 0 16px 20px; }
+
+/* Decorative bubbles */
+.bubble {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #c8f8ff;
+  opacity: 0.7;
+  filter: blur(0.3px);
+  animation: rise 12s linear infinite;
+}
+@keyframes rise {
+  from { transform: translateY(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  to { transform: translateY(-120vh); opacity: 0; }
+}
+
+

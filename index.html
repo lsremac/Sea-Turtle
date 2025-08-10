@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sea Turtle Cleanup</title>
+    <meta name="description" content="Swim across the reef as a sea turtle, collect unusual trash, and clean up the ocean!" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="ui">
+      <div id="hud">
+        <div id="title">Sea Turtle Cleanup</div>
+        <div id="counter">0 / 24</div>
+      </div>
+      <div id="controls">
+        <button id="btn-reset" title="Reset (R)">Reset</button>
+        <button id="btn-mute" title="Mute (M)">Mute</button>
+        <button id="btn-help" title="Help (H)">Help</button>
+      </div>
+    </div>
+
+    <canvas id="game"></canvas>
+
+    <div id="overlay" class="hidden">
+      <div class="card">
+        <h2>You cleaned the reef! 🌊🐢</h2>
+        <p>Great job collecting all the unusual trash.</p>
+        <button id="btn-play-again">Play again</button>
+      </div>
+    </div>
+
+    <div id="help" class="hidden">
+      <div class="card">
+        <h2>How to play</h2>
+        <ul>
+          <li>Move with Arrow Keys or WASD</li>
+          <li>Collect all the unusual trash (24+ items)</li>
+          <li>Avoid getting stuck. Use Reset if needed</li>
+        </ul>
+        <button id="btn-close-help">Got it!</button>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+  </html>
+
+
