@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurtleQuest Test</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 20px; 
+      background: #071e26; 
+      color: white; 
+    }
+    .test-section { 
+      margin: 20px 0; 
+      padding: 15px; 
+      border: 1px solid #00ffd0; 
+      border-radius: 8px; 
+    }
+    .success { color: #00ffd0; }
+    .error { color: #ff6b6b; }
+    .warning { color: #fdcb6e; }
+  </style>
+</head>
+<body>
+  <h1>🐢 TurtleQuest Test Page</h1>
+  
+  <div class="test-section">
+    <h2>Testing Game Components</h2>
+    <div id="test-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Console Output</h2>
+    <div id="console-output" style="background: #000; padding: 10px; border-radius: 4px; font-family: monospace; height: 200px; overflow-y: auto;"></div>
+  </div>
+
+  <script>
+    // Capture console output
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    
+    const consoleOutput = document.getElementById('console-output');
+    const testResults = document.getElementById('test-results');
+    
+    function addToConsole(type, message) {
+      const div = document.createElement('div');
+      div.style.color = type === 'error' ? '#ff6b6b' : type === 'warn' ? '#fdcb6e' : '#00ffd0';
+      div.textContent = `[${type.toUpperCase()}] ${message}`;
+      consoleOutput.appendChild(div);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+    
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      addToConsole('log', args.join(' '));
+    };
+    
+    console.error = function(...args) {
+      originalError.apply(console, args);
+      addToConsole('error', args.join(' '));
+    };
+    
+    console.warn = function(...args) {
+      originalWarn.apply(console, args);
+      addToConsole('warn', args.join(' '));
+    };
+    
+    // Test function
+    function runTests() {
+      const results = [];
+      
+      try {
+        // Test 1: Check if classes are defined
+        if (typeof TurtlePlayer === 'undefined') {
+          results.push({ test: 'TurtlePlayer Class', status: 'error', message: 'TurtlePlayer class not found' });
+        } else {
+          results.push({ test: 'TurtlePlayer Class', status: 'success', message: 'TurtlePlayer class loaded successfully' });
+        }
+        
+        if (typeof GameManager === 'undefined') {
+          results.push({ test: 'GameManager Class', status: 'error', message: 'GameManager class not found' });
+        } else {
+          results.push({ test: 'GameManager Class', status: 'success', message: 'GameManager class loaded successfully' });
+        }
+        
+        if (typeof UIManager === 'undefined') {
+          results.push({ test: 'UIManager Class', status: 'error', message: 'UIManager class not found' });
+        } else {
+          results.push({ test: 'UIManager Class', status: 'success', message: 'UIManager class loaded successfully' });
+        }
+        
+        if (typeof AudioManager === 'undefined') {
+          results.push({ test: 'AudioManager Class', status: 'error', message: 'AudioManager class not found' });
+        } else {
+          results.push({ test: 'AudioManager Class', status: 'success', message: 'AudioManager class loaded successfully' });
+        }
+        
+        if (typeof ParticleManager === 'undefined') {
+          results.push({ test: 'ParticleManager Class', status: 'error', message: 'ParticleManager class not found' });
+        } else {
+          results.push({ test: 'ParticleManager Class', status: 'success', message: 'ParticleManager class loaded successfully' });
+        }
+        
+        // Test 2: Check if Phaser is available
+        if (typeof Phaser === 'undefined') {
+          results.push({ test: 'Phaser Library', status: 'warning', message: 'Phaser library not loaded (CDN may be blocked)' });
+        } else {
+          results.push({ test: 'Phaser Library', status: 'success', message: 'Phaser library loaded successfully' });
+        }
+        
+        // Test 3: Check if main app initializes
+        setTimeout(() => {
+          if (window.turtleQuestApp) {
+            results.push({ test: 'Main App', status: 'success', message: 'TurtleQuestApp initialized successfully' });
+          } else {
+            results.push({ test: 'Main App', status: 'error', message: 'TurtleQuestApp failed to initialize' });
+          }
+          
+          displayResults(results);
+        }, 1000);
+        
+      } catch (error) {
+        results.push({ test: 'Test Execution', status: 'error', message: `Test execution failed: ${error.message}` });
+        displayResults(results);
+      }
+    }
+    
+    function displayResults(results) {
+      testResults.innerHTML = '';
+      results.forEach(result => {
+        const div = document.createElement('div');
+        div.className = result.status;
+        div.innerHTML = `<strong>${result.test}:</strong> ${result.message}`;
+        testResults.appendChild(div);
+      });
+    }
+    
+    // Load the game scripts
+    const scripts = [
+      'js/audio-manager.js',
+      'js/ui-manager.js',
+      'js/pwa-installer.js',
+      'js/leaderboard-manager.js',
+      'js/ai-turtle-chat.js',
+      'js/effects/particle-manager.js',
+      'js/entities/turtle-player.js',
+      'js/entities/trash-manager.js',
+      'js/entities/hazard-manager.js',
+      'js/entities/power-up-manager.js',
+      'js/game-manager.js',
+      'js/main.js'
+    ];
+    
+    let loadedScripts = 0;
+    
+    scripts.forEach(script => {
+      const scriptElement = document.createElement('script');
+      scriptElement.src = script;
+      scriptElement.onload = () => {
+        loadedScripts++;
+        if (loadedScripts === scripts.length) {
+          console.log('All scripts loaded, running tests...');
+          setTimeout(runTests, 500);
+        }
+      };
+      scriptElement.onerror = () => {
+        console.error(`Failed to load script: ${script}`);
+        loadedScripts++;
+        if (loadedScripts === scripts.length) {
+          setTimeout(runTests, 500);
+        }
+      };
+      document.head.appendChild(scriptElement);
+    });
+  </script>
+</body>
+</html>
