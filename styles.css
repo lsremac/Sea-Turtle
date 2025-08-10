@@ -71,7 +71,7 @@ button:hover { background: var(--btn-hover); }
   height: 100vh;
 }
 
-.hidden { display: none; }
+.hidden { display: none !important; }
 
 #overlay, #help {
   position: fixed;
@@ -79,6 +79,10 @@ button:hover { background: var(--btn-hover); }
   display: grid;
   place-items: center;
   background: #00000066;
+}
+
+#overlay.hidden, #help.hidden {
+  display: none !important;
 }
 
 #overlay {

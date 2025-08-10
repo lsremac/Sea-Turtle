@@ -50,6 +50,9 @@
   const TURTLE = { speed: 2.4, accel: 0.22, drag: 0.90, size: 36 };
   const TRASH_COUNT = 26; // at least 24
 
+  // Game state
+  let gameWon = false;
+
   // Camera
   const camera = { x: 0, y: 0, width: 0, height: 0 };
   function updateCamera() {
@@ -149,15 +152,21 @@
   function dist2(ax, ay, bx, by) { const dx = ax - bx, dy = ay - by; return dx*dx + dy*dy; }
 
   function reset() {
+    console.log('Reset function called');
     player.x = 200;
     player.y = 300;
     player.vx = 0;
     player.vy = 0;
     player.collected = 0;
     for (const t of trashItems) t.collected = false;
+    gameWon = false; // Reset gameWon flag
+    console.log('Hiding overlay, current classes:', overlayEl.className);
     overlayEl.classList.add('hidden');
+    console.log('After hiding overlay, classes:', overlayEl.className);
     helpEl.classList.add('hidden');
     updateCounter();
+    console.log('Reset complete, gameWon:', gameWon);
+    console.log('Trash items reset, collected count:', trashItems.filter(t => t.collected).length);
   }
 
   function updateCounter() {
@@ -497,8 +506,13 @@
         playNote(880, 120, 'triangle', 0.04);
       }
     }
-    if (trashItems.every(t => t.collected)) {
+    // Only show overlay if game hasn't been won yet and all trash is collected
+    if (!gameWon && trashItems.every(t => t.collected)) {
+      console.log('Win condition triggered! gameWon was:', gameWon);
+      console.log('Trash collected:', trashItems.filter(t => t.collected).length, 'of', trashItems.length);
+      gameWon = true;
       overlayEl.classList.remove('hidden');
+      console.log('Overlay shown, classes:', overlayEl.className);
       playNote(520, 140, 'triangle', 0.06);
       playNote(660, 140, 'triangle', 0.06);
       playNote(820, 200, 'triangle', 0.06);
@@ -558,12 +572,24 @@
   btnReset.addEventListener('click', reset);
   btnHelp.addEventListener('click', () => toggleHelp(true));
   btnCloseHelp.addEventListener('click', () => toggleHelp(false));
-  btnPlayAgain.addEventListener('click', () => { reset(); });
+  btnPlayAgain.addEventListener('click', () => { 
+    console.log('Play again button clicked');
+    console.log('Before reset - overlay classes:', overlayEl.className, 'gameWon:', gameWon);
+    reset(); 
+    console.log('After reset - overlay classes:', overlayEl.className, 'gameWon:', gameWon);
+  });
   btnMute.addEventListener('click', toggleMute);
 
   // Initial values
   updateCounter();
-  toggleHelp(true);
+  // Remove the automatic help display - let user choose when to see it
+  // toggleHelp(true);
+  
+  // Ensure overlay is hidden at game start
+  console.log('Game initialization - ensuring overlay is hidden');
+  overlayEl.classList.add('hidden');
+  helpEl.classList.add('hidden');
+  console.log('Initial overlay state:', overlayEl.className, 'help state:', helpEl.className);
 })();
 
 
