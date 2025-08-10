@@ -156,6 +156,7 @@
     player.collected = 0;
     for (const t of trashItems) t.collected = false;
     overlayEl.classList.add('hidden');
+    helpEl.classList.add('hidden');
     updateCounter();
   }
 

@@ -79,7 +79,14 @@ button:hover { background: var(--btn-hover); }
   display: grid;
   place-items: center;
   background: #00000066;
-  z-index: 20;
+}
+
+#overlay {
+  z-index: 30;
+}
+
+#help {
+  z-index: 25;
 }
 
 .card {
