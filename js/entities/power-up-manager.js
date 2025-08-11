@@ -205,6 +205,17 @@ class PowerUpManager {
     });
   }
   
+  spawnBonusPowerUps() {
+    // Spawn extra power-ups during special events
+    const bonusCount = Math.min(3, this.maxPowerUps - this.powerUps.length);
+    
+    for (let i = 0; i < bonusCount; i++) {
+      setTimeout(() => {
+        this.spawnPowerUp();
+      }, i * 500); // Stagger spawns
+    }
+  }
+  
   clearAllPowerUps() {
     this.powerUps.forEach(powerUp => powerUp.destroy());
     this.powerUps = [];

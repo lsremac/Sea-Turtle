@@ -125,6 +125,11 @@ class TurtleQuestApp {
     document.getElementById('main-menu').classList.add('hidden');
     document.getElementById('game-ui').classList.remove('hidden');
     
+    // Debug: Check if game container exists
+    const gameContainer = document.getElementById('phaser-game');
+    console.log('Game container found:', gameContainer);
+    console.log('Game container dimensions:', gameContainer?.offsetWidth, 'x', gameContainer?.offsetHeight);
+    
     // Reset game data
     this.resetGameData();
     
@@ -295,6 +300,9 @@ class TurtleQuestApp {
     });
     
     document.getElementById('btn-settings').addEventListener('click', () => {
+      console.log('Settings button clicked');
+      console.log('UIManager:', this.uiManager);
+      console.log('Settings:', this.settings);
       this.uiManager.showSettingsOverlay(this.settings);
     });
     

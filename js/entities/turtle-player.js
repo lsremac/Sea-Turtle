@@ -36,13 +36,21 @@ class TurtlePlayer {
   }
   
   createSprite() {
+    console.log('Creating turtle sprite at:', this.x, this.y);
+    console.log('Scene physics:', this.scene.physics);
+    console.log('Turtle texture available:', this.scene.textures.exists('turtle'));
+    
     this.sprite = this.scene.physics.add.sprite(this.x, this.y, 'turtle');
+    console.log('Turtle sprite created:', this.sprite);
+    
     this.sprite.setScale(1.5);
     this.sprite.setCollideWorldBounds(true);
     
     // Set data for collision detection
     this.sprite.setData('type', 'player');
     this.sprite.setData('damage', 0);
+    
+    console.log('Turtle sprite setup complete');
   }
   
   setupAnimations() {
@@ -377,6 +385,19 @@ class TurtlePlayer {
   
   isShielded() {
     return this.isShielded;
+  }
+  
+  setInvincible(invincible) {
+    this.isInvincible = invincible;
+    if (invincible) {
+      // Add visual effect for invincibility
+      this.sprite.setTint(0x00ffff);
+      this.sprite.setAlpha(0.8);
+    } else {
+      // Remove visual effect
+      this.sprite.clearTint();
+      this.sprite.setAlpha(1);
+    }
   }
   
   resetPosition() {

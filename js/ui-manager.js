@@ -89,12 +89,15 @@ class UIManager {
   }
   
   showSettingsOverlay(settings) {
+    console.log('UIManager.showSettingsOverlay called with:', settings);
+    
     // Populate settings form
     document.getElementById('sound-volume').value = settings.soundVolume;
     document.getElementById('music-volume').value = settings.musicVolume;
     document.getElementById('difficulty').value = settings.difficulty;
     document.getElementById('particle-effects').checked = settings.particleEffects;
     
+    console.log('Settings form populated, showing overlay');
     this.showOverlay('settings-overlay');
   }
   
@@ -111,6 +114,8 @@ class UIManager {
   }
   
   showOverlay(overlayId) {
+    console.log('UIManager.showOverlay called with:', overlayId);
+    
     // Hide current overlay if any
     if (this.currentOverlay) {
       this.hideOverlay(this.currentOverlay);
@@ -118,12 +123,17 @@ class UIManager {
     
     // Show new overlay
     const overlay = document.getElementById(overlayId);
+    console.log('Found overlay element:', overlay);
+    
     if (overlay) {
       overlay.classList.remove('hidden');
       this.currentOverlay = overlayId;
+      console.log('Overlay shown, currentOverlay set to:', this.currentOverlay);
       
       // Add escape key listener
       this.addEscapeListener();
+    } else {
+      console.error('Overlay element not found:', overlayId);
     }
   }
   

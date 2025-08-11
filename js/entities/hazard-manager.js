@@ -176,6 +176,23 @@ class HazardManager {
     });
   }
   
+  setSpeedMultiplier(multiplier) {
+    this.hazards.forEach(hazard => {
+      const baseSpeed = hazard.getData('speed');
+      const currentVelocity = hazard.body.velocity;
+      const speed = baseSpeed * multiplier;
+      
+      // Normalize current direction and apply new speed
+      const magnitude = Math.sqrt(currentVelocity.x * currentVelocity.x + currentVelocity.y * currentVelocity.y);
+      if (magnitude > 0) {
+        hazard.setVelocity(
+          (currentVelocity.x / magnitude) * speed,
+          (currentVelocity.y / magnitude) * speed
+        );
+      }
+    });
+  }
+  
   clearAllHazards() {
     this.hazards.forEach(hazard => hazard.destroy());
     this.hazards = [];

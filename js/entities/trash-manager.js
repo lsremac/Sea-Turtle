@@ -183,6 +183,10 @@ class TrashManager {
     }
   }
   
+  setMagnetRadius(radius) {
+    this.magnetRadius = radius;
+  }
+  
   removeTrash(trash) {
     if (trash && trash.parent) {
       trash.destroy();
