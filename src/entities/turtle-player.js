@@ -43,12 +43,28 @@ class TurtlePlayer {
     this.sprite = this.scene.physics.add.sprite(this.x, this.y, 'turtle');
     console.log('Turtle sprite created:', this.sprite);
     
-    this.sprite.setScale(1.5);
+    this.sprite.setScale(2.0); // Make it bigger for visibility
     this.sprite.setCollideWorldBounds(true);
     
     // Set data for collision detection
     this.sprite.setData('type', 'player');
     this.sprite.setData('damage', 0);
+    
+    // Add debug text above turtle
+    this.debugText = this.scene.add.text(this.x, this.y - 50, '🐢 TURTLE', {
+      fontSize: '16px',
+      fill: '#00ff00',
+      stroke: '#000000',
+      strokeThickness: 2
+    }).setOrigin(0.5);
+    
+    // Add position display
+    this.positionText = this.scene.add.text(this.x, this.y + 50, `X: ${this.x}, Y: ${this.y}`, {
+      fontSize: '12px',
+      fill: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 1
+    }).setOrigin(0.5);
     
     console.log('Turtle sprite setup complete');
   }
@@ -81,12 +97,19 @@ class TurtlePlayer {
   }
   
   setupInput() {
-    this.cursors = this.scene.input.keyboard.createCursorKeys();
-    this.wasd = this.scene.input.keyboard.addKeys('W', 'A', 'S', 'D');
-    this.spaceKey = this.scene.input.keyboard.addKey('SPACE');
-    
-    // Mobile touch controls
-    this.setupMobileControls();
+    // Wait for scene to be ready
+    if (this.scene && this.scene.input && this.scene.input.keyboard) {
+      this.cursors = this.scene.input.keyboard.createCursorKeys();
+      this.wasd = this.scene.input.keyboard.addKeys('W', 'A', 'S', 'D');
+      this.spaceKey = this.scene.input.keyboard.addKey('SPACE');
+      
+      // Mobile touch controls
+      this.setupMobileControls();
+    } else {
+      console.warn('Scene input not ready, retrying in next frame');
+      // Retry in next frame
+      this.scene.time.delayedCall(100, () => this.setupInput());
+    }
   }
   
   setupMobileControls() {
@@ -192,6 +215,11 @@ class TurtlePlayer {
   }
   
   handleInput() {
+    // Check if input is ready
+    if (!this.cursors || !this.wasd || !this.spaceKey) {
+      return; // Input not ready yet
+    }
+
     // Reset velocity
     this.sprite.setVelocity(0, 0);
     

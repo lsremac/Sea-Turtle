@@ -172,9 +172,19 @@ class GameManager {
   createFallbackTurtle() {
     // Create a simple colored rectangle as fallback for turtle
     const graphics = this.scene.add.graphics();
-    graphics.fillStyle(0x00ff00);
-    graphics.fillRect(0, 0, 32, 32);
-    graphics.generateTexture('turtle', 32, 32);
+    graphics.fillStyle(0x00ff00); // Bright green
+    graphics.fillRect(0, 0, 64, 64); // Make it bigger
+    graphics.lineStyle(2, 0x000000); // Black border
+    graphics.strokeRect(0, 0, 64, 64);
+    
+    // Add a simple turtle face
+    graphics.fillStyle(0x000000);
+    graphics.fillCircle(16, 16, 4); // Left eye
+    graphics.fillCircle(48, 16, 4); // Right eye
+    graphics.fillStyle(0xff0000);
+    graphics.fillCircle(32, 48, 6); // Red nose
+    
+    graphics.generateTexture('turtle', 64, 64);
     graphics.destroy();
   }
   
@@ -239,6 +249,17 @@ class GameManager {
     this.scene.add.text(400, 100, 'TurtleQuest Game Running!', {
       fontSize: '24px',
       fill: '#00ff00'
+    }).setOrigin(0.5);
+    
+    // Add control instructions
+    this.scene.add.text(400, 150, 'Use ARROW KEYS or WASD to move the turtle', {
+      fontSize: '18px',
+      fill: '#ffff00'
+    }).setOrigin(0.5);
+    
+    this.scene.add.text(400, 180, 'SPACEBAR for turbo boost (when available)', {
+      fontSize: '16px',
+      fill: '#ffff00'
     }).setOrigin(0.5);
     
     // Initialize managers
