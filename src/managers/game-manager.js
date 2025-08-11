@@ -237,7 +237,8 @@ class GameManager {
     // Create background with fallback
     try {
       console.log('Creating ocean background...');
-      this.scene.add.tileSprite(400, 300, 800, 600, 'ocean-bg');
+      const bg = this.scene.add.tileSprite(400, 300, 800, 600, 'ocean-bg');
+      bg.setDepth(-10); // Put background behind everything
       console.log('Ocean background created successfully');
     } catch (error) {
       console.warn('Failed to create ocean background, using fallback:', error);
@@ -249,18 +250,18 @@ class GameManager {
     this.scene.add.text(400, 100, 'TurtleQuest Game Running!', {
       fontSize: '24px',
       fill: '#00ff00'
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(5);
     
     // Add control instructions
     this.scene.add.text(400, 150, 'Use ARROW KEYS or WASD to move the turtle', {
       fontSize: '18px',
       fill: '#ffff00'
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(5);
     
     this.scene.add.text(400, 180, 'SPACEBAR for turbo boost (when available)', {
       fontSize: '16px',
       fill: '#ffff00'
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(5);
     
     // Initialize managers
     console.log('Initializing managers...');
@@ -323,6 +324,7 @@ class GameManager {
   createFallbackBackground() {
     // Create a simple blue background as fallback
     const graphics = this.scene.add.graphics();
+    graphics.setDepth(-10); // Put background behind everything
     graphics.fillStyle(0x87CEEB); // Sky blue
     graphics.fillRect(0, 0, 800, 600);
     

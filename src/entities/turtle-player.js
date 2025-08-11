@@ -44,6 +44,7 @@ class TurtlePlayer {
     console.log('Turtle sprite created:', this.sprite);
     
     this.sprite.setScale(2.0); // Make it bigger for visibility
+    this.sprite.setDepth(5); // Ensure turtle is above background
     this.sprite.setCollideWorldBounds(true);
     
     // Set data for collision detection
@@ -56,7 +57,7 @@ class TurtlePlayer {
       fill: '#00ff00',
       stroke: '#000000',
       strokeThickness: 2
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(10);
     
     // Add position display
     this.positionText = this.scene.add.text(this.x, this.y + 50, `X: ${this.x}, Y: ${this.y}`, {
@@ -64,7 +65,7 @@ class TurtlePlayer {
       fill: '#ffffff',
       stroke: '#000000',
       strokeThickness: 1
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(10);
     
     console.log('Turtle sprite setup complete');
   }
