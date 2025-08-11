@@ -1,26 +1,20 @@
 {
   "name": "turtlequest-ocean-savior",
   "version": "1.0.0",
-  "description": "An AI-powered, cloud-hosted side-scrolling game with real-time leaderboards and environmental education",
-  "main": "server/app.js",
+  "description": "An AI-powered ocean cleanup adventure game with real-time leaderboards and environmental education",
+  "main": "index.html",
   "scripts": {
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "dev:frontend": "vite",
-    "dev:backend": "nodemon server/app.js",
-    "build": "vite build",
-    "start": "node server/app.js",
-    "install:all": "npm install && cd server && npm install"
+    "dev": "python -m http.server 8000",
+    "dev:node": "npx http-server -p 8000 -c-1",
+    "dev:live": "npx live-server --port=8000 --no-browser",
+    "build": "echo 'No build step needed for static HTML game'",
+    "start": "python -m http.server 8000"
   },
   "keywords": ["game", "phaser", "turtle", "ocean", "ai", "pwa"],
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
-    "vite": "^5.0.0",
-    "concurrently": "^8.2.2",
-    "nodemon": "^3.0.2"
-  },
-  "dependencies": {
-    "phaser": "^3.70.0",
-    "socket.io-client": "^4.7.4"
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2"
   }
 }
